@@ -1,0 +1,115 @@
+{
+  "places": [
+    {
+      "name": "in1",
+      "type": "User"
+    },
+    {
+      "name": "in2",
+      "type": "Order"
+    },
+    {
+      "name": "out1",
+      "type": "Email"
+    }
+  ],
+  "transitions": [
+    {
+      "name": "send_email",
+      "inputs": [
+        {
+          "name": "inp_recipient",
+          "type": "IEmailRecipient"
+        },
+        {
+          "name": "inp_order",
+          "type": "Order"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out_email",
+          "type": "Email"
+        }
+      ]
+    }
+  ],
+  "arcs": [
+    {
+      "from": "in1",
+      "to": "send_email.inp_recipient"
+    },
+    {
+      "from": "in2",
+      "to": "send_email.inp_order"
+    },
+    {
+      "from": "send_email.out_email",
+      "to": "out1"
+    }
+  ],
+  "types": [
+    {
+      "name": "User",
+      "type": "class",
+      "properties": [
+        {
+          "name": "FirstName",
+          "type": "string"
+        },
+        {
+          "name": "Age",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "name": "Company",
+      "type": "class",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "string"
+        },
+        {
+          "name": "PostCode",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "type": "class",
+      "properties": [
+        {
+          "name": "OrderNumber",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Email",
+      "type": "class",
+      "properties": [
+        {
+          "name": "StatusCode",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "name": "IEmailRecipient",
+      "type": "interface",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "string"
+        },
+        {
+          "name": "Email",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}
