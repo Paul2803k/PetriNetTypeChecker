@@ -21,5 +21,6 @@ namespace NeTypeChecker.Net
         public List<String> Interfaces { set; get; }
 
         public Declaration[] Declatations { set; get; }
+
     }
 }

@@ -11,7 +11,16 @@
     {
       "name": "out1",
       "type": "Email"
+    },
+    {
+      "name": "out2",
+      "type": "User"
+    },
+    {
+      "name": "out3",
+      "type": "User"
     }
+
   ],
   "transitions": [
     {
@@ -30,6 +39,25 @@
         {
           "name": "out_email",
           "type": "Email"
+        },
+        {
+          "name": "out_order",
+          "type": "typeof(inp_recipient)"
+        }
+      ]
+    },
+    {
+      "name": "do_nothing",
+      "inputs": [
+        {
+          "name": "inp_nothing",
+          "type": "Generic"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out_nothing",
+          "type": "typeof(inp_nothing)"
         }
       ]
     }
@@ -46,6 +74,18 @@
     {
       "from": "send_email.out_email",
       "to": "out1"
+    },
+    {
+      "from": "send_email.out_order",
+      "to": "out2"
+    },
+    {
+      "from": "out2",
+      "to": "do_nothing.inp_nothing"
+    },
+    {
+      "from": "do_nothing.out_nothing",
+      "to": "out3"
     }
   ],
   "types": [
@@ -54,12 +94,16 @@
       "type": "class",
       "properties": [
         {
-          "name": "FirstName",
+          "name": "Name",
           "type": "string"
         },
         {
           "name": "Age",
           "type": "int"
+        },
+        {
+          "name": "Email",
+          "type": "string"
         }
       ]
     },
