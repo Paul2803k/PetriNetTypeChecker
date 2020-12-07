@@ -3,6 +3,7 @@ using NeTypeChecker.Net;
 using Newtonsoft.Json;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NeTypeChecker
 {
@@ -11,8 +12,19 @@ namespace NeTypeChecker
         // attachers
         static string AttachInterfaces(List<String> interfaces) {
             string output = "";
-            foreach (string s in interfaces)
-                output += " : " + s;
+            int nInt = interfaces.Count;
+            if (nInt != 0)
+            {
+                for (int i = 0; i < nInt; i++)
+                {
+                    var el = interfaces[i];
+
+                    if (i == 0)
+                        output += ": " + el;
+                    else
+                        output += ", " + el;
+                }
+            }
             return output;
         }
 
@@ -122,6 +134,11 @@ namespace NeTypeChecker
                 {
                     sw.WriteLine("        public " + d.Type + " " + d.Names + " {get;} ");
                 }
+                foreach (var o in t.Originals) {
+                    sw.WriteLine();
+                    sw.WriteLine("        public static implicit operator " + o.Name + " (" + t.Name + " o) => throw new Exception();");
+                }
+
                 sw.WriteLine("    }");
             }
         }
@@ -253,11 +270,12 @@ namespace NeTypeChecker
         {
             List<NetTypes> netTypes = new List<NetTypes>();
             net.Net_Types = netTypes;
+            
 
             foreach (var t in net.Json_Types)
             {
                 List<string> interfaces = new List<string>();
-                net.Net_Types.Add(new NetTypes(t.Name, t.Type, interfaces, t.Declatations));
+                net.Net_Types.Add(new NetTypes(t.Name, t.Type, interfaces, t.Declatations, new List<JsonTypes>()));
             }
         }
 
@@ -286,6 +304,52 @@ namespace NeTypeChecker
             sw.WriteLine("    }");
         }
 
+        static void MakeNewType(Petri net, List<string> names) {
+
+            string name = "";
+            string type = "class";
+            List<string> interfaces = new List<string>();
+            List<Declaration> declatations = new List<Declaration>();
+            List<JsonTypes> originals = new List<JsonTypes>();
+
+            foreach (var el in names) {
+                
+                name += el;
+
+                interfaces.AddRange(net.Net_Types.Find(e => e.Name == el).Interfaces);
+                interfaces = interfaces.Distinct().ToList();
+                declatations.AddRange(net.Net_Types.Find(e => e.Name == el).Declatations);
+                declatations = declatations.Distinct().ToList();
+                originals.Add(net.Json_Types.Find(e => e.Name == el));
+            }
+
+            net.Net_Types.Add(new NetTypes(name, type, interfaces, declatations,originals));
+
+
+        }
+        
+        static void BuildTypes(Petri net) {
+
+            List<string> toBuild = new List<string>();
+
+            foreach (var t in net.Transitions)
+            {
+                foreach (var outs in t.Outputs)
+                {
+                    if (outs.Type.Contains("+"))
+                    {
+                        toBuild.Add(outs.Type);
+                        outs.Type = String.Concat(outs.Type.Split("+"));
+                        
+                    }
+                }
+            }
+
+            foreach (var el in toBuild) {
+                MakeNewType(net , new List<string>(el.Split("+")));
+            }
+        }
+
         static void Main(string[] args)
         {
             string path = @"C:\Users\scatt\Desktop\Paolo\Università\Year 3\1) First Quarter\Thesis\NetTypeChecker\ConsoleApp3\";
@@ -300,6 +364,7 @@ namespace NeTypeChecker
             //jsonType to NetTypes
             PrepareNet(net);
             InferInterfaces(net);
+            BuildTypes(net);
 
             DeclareClasses(net, sw);
             MakeNet(net, sw);

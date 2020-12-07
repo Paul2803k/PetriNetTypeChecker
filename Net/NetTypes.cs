@@ -7,11 +7,12 @@ namespace NeTypeChecker.Net
 {
     public class NetTypes
     {
-        public NetTypes(string name, string type, List<String> interfaces, Declaration[] declarations) {
+        public NetTypes(string name, string type, List<String> interfaces, List<Declaration> declarations, List<JsonTypes> originals) {
             this.Name = name;
             this.Type = type;
             this.Interfaces = interfaces;
             this.Declatations = declarations;
+            this.Originals = originals;
         }
 
         public string Name { set; get; }
@@ -20,7 +21,8 @@ namespace NeTypeChecker.Net
 
         public List<String> Interfaces { set; get; }
 
-        public Declaration[] Declatations { set; get; }
+        public List<Declaration> Declatations { set; get; }
 
+        public List<JsonTypes> Originals { set; get; }
     }
 }

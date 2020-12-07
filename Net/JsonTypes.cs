@@ -14,6 +14,6 @@ namespace NeTypeChecker.Net
         public string Type { set; get; }
 
         [JsonProperty("properties")]
-        public Declaration[] Declatations { set; get; }
+        public List<Declaration> Declatations { set; get; }
     }
 }

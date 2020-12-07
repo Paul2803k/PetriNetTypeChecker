@@ -9,6 +9,10 @@
       "type": "Order"
     },
     {
+      "name": "in3",
+      "type": "Order"
+    },
+    {
       "name": "out1",
       "type": "Email"
     },
@@ -18,7 +22,7 @@
     },
     {
       "name": "out3",
-      "type": "User"
+      "type": "UserOrder"
     }
 
   ],
@@ -50,14 +54,18 @@
       "name": "do_nothing",
       "inputs": [
         {
-          "name": "inp_nothing",
-          "type": "Generic"
+          "name": "user_in",
+          "type": "User"
+        },
+        {
+          "name": "order_in",
+          "type": "IOrderRecipient"
         }
       ],
       "outputs": [
         {
           "name": "out_nothing",
-          "type": "typeof(inp_nothing)"
+          "type": "User+Order"
         }
       ]
     }
@@ -81,11 +89,15 @@
     },
     {
       "from": "out2",
-      "to": "do_nothing.inp_nothing"
+      "to": "do_nothing.user_in"
+    },
+    {
+      "from": "in3",
+      "to": "do_nothing.order_in"
     },
     {
       "from": "do_nothing.out_nothing",
-      "to": "out3"
+      "to": "in1"
     }
   ],
   "types": [
@@ -126,9 +138,14 @@
       "type": "class",
       "properties": [
         {
-          "name": "OrderNumber",
+          "name": "Address",
           "type": "string"
+        },
+        {
+          "name": "OrdNum",
+          "type": "int"
         }
+      
       ]
     },
     {
@@ -152,6 +169,20 @@
         {
           "name": "Email",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "IOrderRecipient",
+      "type": "interface",
+      "properties": [
+        {
+          "name": "Address",
+          "type": "string"
+        },
+        {
+          "name": "OrdNum",
+          "type": "int"
         }
       ]
     }
